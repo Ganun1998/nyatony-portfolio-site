@@ -50,6 +50,8 @@
 }
 
 :root {
+  color-scheme: light;
+
   --radius: 0.5rem;
 
   --ivory: oklch(1 0 0);
@@ -73,7 +75,7 @@
   --muted-foreground: oklch(0.4 0.02 30);
   --accent: oklch(0.95 0.02 80);
   --accent-foreground: oklch(0.2 0.01 30);
-  
+  --destructive: oklch(0.55 0.18 27);
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.92 0.01 60);
   --input: oklch(0.92 0.01 60);
@@ -88,6 +90,8 @@
 
 /* Dark mode overrides */
 .dark {
+  color-scheme: dark;
+
   --background: oklch(0.1 0.005 30);
   --foreground: oklch(0.92 0.01 60);
   --card: oklch(0.14 0.005 30);
@@ -125,6 +129,15 @@
     -webkit-font-smoothing: antialiased;
     letter-spacing: 0.01em;
     transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  html {
+    background-color: oklch(1 0 0);
+  }
+
+  html[data-dark="true"] {
+    background-color: oklch(0.1 0.005 30);
+    color-scheme: dark;
   }
 
   h1, h2, h3, h4, h5 {

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, createContext, useContext, type ReactNode } from "react";
+import { useState, createContext, useContext, useEffect, type ReactNode } from "react";
 
 /* ------------------------------------------------------------------ */
 /*  Theme context                                                      */
@@ -52,6 +52,12 @@ function NyatonyPage() {
   useReveal();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dark, setDark] = useState(false);
+
+  // Sync dark state to <html> so the overscroll / body background matches on mobile
+  useEffect(() => {
+    document.documentElement.setAttribute("data-dark", dark ? "true" : "false");
+    return () => document.documentElement.removeAttribute("data-dark");
+  }, [dark]);
 
   return (
     <ThemeContext.Provider value={{ dark, toggle: () => setDark((d) => !d) }}>
