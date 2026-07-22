@@ -157,18 +157,6 @@
   font-family: var(--font-script);
 }
 
-@utility gold-text {
-  background: linear-gradient(
-    135deg,
-    #f8e7a1,
-    #d4af37,
-    #b8860b
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
 @utility ornament {
   &::before,
   &::after {
