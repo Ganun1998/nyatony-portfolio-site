@@ -11,6 +11,9 @@ import gallery1 from "@/assets/gallery-1.jpg";
 import gallery3 from "@/assets/gallery-3.jpg";
 import wreath from "@/assets/wreath.png";
 import nyagoa from "@/assets/nyagoa.jpg";
+import nyatony from "@/assets/nyatony.jpg";
+import student from "@/assets/student.jpg";
+import tong from "@/assets/tong.jpg";
 
 import { useReveal } from "@/hooks/use-reveal";
 
@@ -171,7 +174,7 @@ function Hero() {
     <section id="home" className="relative min-h-screen w-full">
       <div className="absolute inset-0">
         <img
-          src={gallery1}
+          src={tong}
           alt="Portrait of Nyatony Kai Tut"
           className="h-full w-full object-cover"
         />
@@ -239,7 +242,7 @@ function Introduction() {
         <div className="reveal relative">
           <div className="overflow-hidden rounded-[2rem] shadow-[var(--shadow-elegant)]">
             <img
-              src={gallery1}
+              src={nyatony}
               alt="Nyatony Kai Tut"
               className="h-full w-full object-cover"
               loading="lazy"
@@ -313,7 +316,7 @@ function EarlyLife() {
       </div>
 
       <div className="reveal mx-auto mt-14 max-w-5xl overflow-hidden rounded-3xl shadow-[var(--shadow-elegant)]">
-        <img src={gallery1} alt="Childhood memory" className="h-80 w-full object-cover" loading="lazy" />
+        <img src={student} alt="Childhood memory" className="h-80 w-full object-cover" loading="lazy" />
       </div>
     </section>
   );
@@ -848,11 +851,11 @@ function Legacy() {
         </h3>
         <div className="mt-8 flex flex-col items-center gap-3 text-sm">
           <div className="rounded-full border border-primary/40 bg-accent px-5 py-2 font-display text-lg">
-            Grandmother · Nyayiin Mawaii Chuol
+            Grandparent · Chuol Tut Kuannyang & Nyayin Mawai Chuol
           </div>
           <span className="h-6 w-px bg-primary/40" />
           <div className="flex flex-wrap justify-center gap-2">
-            {["Chuol Par Tai", "Yak Chuol Tut", "Galam Kai Chuol Tut"].map((n) => (
+            {["Nhial Chuol Tut", "Kai Chuol Tut", "Yak Chuol Tut"].map((n) => (
               <span key={n} className="rounded-full border border-border bg-white px-4 py-1.5">
                 {n}
               </span>
