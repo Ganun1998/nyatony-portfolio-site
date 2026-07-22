@@ -1,5 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, type ReactNode } from "react";
+import { useState, createContext, useContext, type ReactNode } from "react";
+
+/* ------------------------------------------------------------------ */
+/*  Theme context                                                      */
+/* ------------------------------------------------------------------ */
+const ThemeContext = createContext<{ dark: boolean; toggle: () => void }>({
+  dark: false,
+  toggle: () => {},
+});
 import {
   Accordion,
   AccordionContent,
@@ -29,7 +37,6 @@ export const Route = createFileRoute("/")({
 
 const NAV = [
   { href: "#home", label: "Home" },
-  { href: "#contents", label: "Contents" },
   { href: "#introduction", label: "Introduction" },
   { href: "#early-life", label: "Early Life" },
   { href: "#education", label: "Education" },
@@ -44,10 +51,12 @@ const NAV = [
 function NyatonyPage() {
   useReveal();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dark, setDark] = useState(false);
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
-      <Nav open={menuOpen} setOpen={setMenuOpen} />
+    <ThemeContext.Provider value={{ dark, toggle: () => setDark((d) => !d) }}>
+      <div className={`relative min-h-screen overflow-x-hidden bg-background text-foreground${dark ? " dark" : ""}`}>
+        <Nav open={menuOpen} setOpen={setMenuOpen} />
       <Hero />
       <Introduction />
       <EarlyLife />
@@ -63,6 +72,7 @@ function NyatonyPage() {
       <Conclusion />
       <Footer />
     </div>
+    </ThemeContext.Provider>
   );
 }
 
@@ -70,8 +80,9 @@ function NyatonyPage() {
 /*  Navigation                                                         */
 /* ------------------------------------------------------------------ */
 function Nav({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => void }) {
+  const { dark, toggle } = useContext(ThemeContext);
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-white/80 backdrop-blur-md">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3 sm:px-8">
         <a href="#home" className="font-script text-2xl gold-text leading-none">
           Nyatony
@@ -92,25 +103,36 @@ function Nav({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => void }
           </ul>
         </nav>
 
-        <button
-          type="button"
-          aria-label="Toggle menu"
-          onClick={() => setOpen(!open)}
-          className="lg:hidden grid h-10 w-10 place-items-center rounded-full border border-border"
-        >
-          <span className="relative block h-3 w-5">
-            <span
-              className={`absolute inset-x-0 top-0 h-px bg-foreground transition-transform ${
-                open ? "translate-y-1.5 rotate-45" : ""
-              }`}
-            />
-            <span
-              className={`absolute inset-x-0 bottom-0 h-px bg-foreground transition-transform ${
-                open ? "-translate-y-1 -rotate-45" : ""
-              }`}
-            />
-          </span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+            onClick={toggle}
+            className="grid h-10 w-10 place-items-center rounded-full border border-border bg-background text-base transition-colors hover:bg-accent"
+          >
+            {dark ? "☀️" : "🌙"}
+          </button>
+
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            onClick={() => setOpen(!open)}
+            className="lg:hidden grid h-10 w-10 place-items-center rounded-full border border-border"
+          >
+            <span className="relative block h-3 w-5">
+              <span
+                className={`absolute inset-x-0 top-0 h-px bg-foreground transition-transform ${
+                  open ? "translate-y-1.5 rotate-45" : ""
+                }`}
+              />
+              <span
+                className={`absolute inset-x-0 bottom-0 h-px bg-foreground transition-transform ${
+                  open ? "-translate-y-1 -rotate-45" : ""
+                }`}
+              />
+            </span>
+          </button>
+        </div>
       </div>
 
       <div
@@ -118,7 +140,7 @@ function Nav({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => void }
           open ? "max-h-[80vh]" : "max-h-0"
         }`}
       >
-        <div className="mx-4 mb-3 rounded-2xl border border-border bg-white p-4 shadow-[var(--shadow-soft)]">
+        <div className="mx-4 mb-3 rounded-2xl border border-border bg-background p-4 shadow-[var(--shadow-soft)]">
           <ul className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
             {NAV.map((item) => (
               <li key={item.href}>
@@ -195,10 +217,10 @@ function Hero() {
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/15 px-5 py-2.5 text-xs uppercase tracking-[0.22em] text-white backdrop-blur-md">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-card/15 px-5 py-2.5 text-xs uppercase tracking-[0.22em] text-white backdrop-blur-md">
             🎓 University Graduate 2026
           </span>
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/15 px-5 py-2.5 text-xs uppercase tracking-[0.22em] text-white backdrop-blur-md">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-card/15 px-5 py-2.5 text-xs uppercase tracking-[0.22em] text-white backdrop-blur-md">
             💍 Celebrating Marriage
           </span>
         </div>
@@ -223,7 +245,7 @@ function Hero() {
       <div className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-white/80">
         <div className="flex flex-col items-center gap-2 text-[10px] uppercase tracking-[0.4em]">
           Scroll
-          <span className="block h-10 w-px animate-pulse bg-white/80" />
+          <span className="block h-10 w-px animate-pulse bg-card/80" />
         </div>
       </div>
     </section>
@@ -271,7 +293,7 @@ function Introduction() {
             {traits.map((t) => (
               <span
                 key={t}
-                className="rounded-full border border-primary/40 bg-white px-4 py-1.5 text-xs uppercase tracking-[0.18em] text-foreground"
+                className="rounded-full border border-primary/40 bg-card px-4 py-1.5 text-xs uppercase tracking-[0.18em] text-foreground"
               >
                 {t}
               </span>
@@ -307,7 +329,7 @@ function EarlyLife() {
         {EARLY.map((e) => (
           <article
             key={e.title}
-            className="reveal rounded-2xl border border-border bg-white p-7 shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-1"
+            className="reveal rounded-2xl border border-border bg-card p-7 shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-1"
           >
             <h3 className="mt-4 font-display text-2xl text-foreground">{e.title}</h3>
             <p className="mt-2 leading-relaxed text-muted-foreground">{e.text}</p>
@@ -365,7 +387,7 @@ function Education() {
           {EDUCATION.map((e) => (
             <li key={e.title} className="reveal relative pl-14 md:pl-20">
               <span className="absolute left-2.5 top-3 h-3 w-3 rounded-full bg-primary shadow-[0_0_0_6px_var(--color-accent)] md:left-[1.15rem]" />
-              <div className="rounded-2xl border border-border bg-white p-6 shadow-[var(--shadow-soft)] sm:p-8">
+              <div className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)] sm:p-8">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <p className="font-script text-3xl gold-text">{e.year}</p>
                   <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
@@ -414,7 +436,7 @@ function Qualities() {
         {QUALITIES.map((q) => (
           <article
             key={q.title}
-            className="reveal rounded-2xl border border-border bg-white p-8 text-center shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-1"
+            className="reveal rounded-2xl border border-border bg-card p-8 text-center shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-1"
           >
             <h3 className="mt-5 font-display text-2xl text-foreground">{q.title}</h3>
             <p className="mt-2 leading-relaxed text-muted-foreground">{q.text}</p>
@@ -456,7 +478,7 @@ function CareerAchievements() {
         {ACHIEVEMENTS.map((a) => (
           <div
             key={a.k}
-            className="reveal rounded-2xl border border-border bg-white p-6 text-center shadow-[var(--shadow-soft)]"
+            className="reveal rounded-2xl border border-border bg-card p-6 text-center shadow-[var(--shadow-soft)]"
           >
             <p className="font-display text-4xl text-primary">{a.k}</p>
             <p className="mt-2 text-sm text-muted-foreground">{a.v}</p>
@@ -468,7 +490,7 @@ function CareerAchievements() {
         {items.map((i) => (
           <div
             key={i}
-            className="flex items-center gap-3 rounded-xl border border-border bg-white px-5 py-4"
+            className="flex items-center gap-3 rounded-xl border border-border bg-card px-5 py-4"
           >
             <span className="grid h-8 w-8 place-items-center rounded-full bg-primary/15 text-primary">
               ✓
@@ -546,7 +568,7 @@ function FamilyReflections() {
         {REFLECTIONS.map((r) => (
           <article
             key={r.name}
-            className="reveal rounded-2xl border border-border bg-white p-6 shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-1"
+            className="reveal rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-1"
           >
             <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
               {r.name}
@@ -602,7 +624,7 @@ function WhatMakesDifferent() {
         title="What makes Nyatony different?"
         intro="Answers from family, on what sets her apart from friends and classmates."
       />
-      <div className="reveal mx-auto mt-12 max-w-3xl rounded-2xl border border-border bg-white p-2 shadow-[var(--shadow-soft)] sm:p-4">
+      <div className="reveal mx-auto mt-12 max-w-3xl rounded-2xl border border-border bg-card p-2 shadow-[var(--shadow-soft)] sm:p-4">
         <Accordion type="single" collapsible className="w-full">
           {DIFFERENT.map((d, i) => (
             <AccordionItem key={d.q} value={`d-${i}`} className="border-border">
@@ -651,7 +673,7 @@ function QualitiesAdmired() {
         eyebrow="Most Admired"
         title="What quality do you admire most?"
       />
-      <div className="reveal mx-auto mt-12 max-w-3xl rounded-2xl border border-border bg-white p-2 shadow-[var(--shadow-soft)] sm:p-4">
+      <div className="reveal mx-auto mt-12 max-w-3xl rounded-2xl border border-border bg-card p-2 shadow-[var(--shadow-soft)] sm:p-4">
         <Accordion type="single" collapsible className="w-full">
           {ADMIRED.map((d, i) => (
             <AccordionItem key={d.q} value={`a-${i}`} className="border-border">
@@ -705,7 +727,7 @@ function Lessons() {
         {LESSONS.map((l) => (
           <blockquote
             key={l.who}
-            className="reveal rounded-2xl border border-border bg-white p-8 shadow-[var(--shadow-soft)]"
+            className="reveal rounded-2xl border border-border bg-card p-8 shadow-[var(--shadow-soft)]"
           >
             <p className="font-display text-5xl gold-text leading-none">“</p>
             <p className="mt-2 leading-relaxed text-foreground/85 italic">{l.text}</p>
@@ -720,7 +742,7 @@ function Lessons() {
         {pillars.map((p) => (
           <div
             key={p}
-            className="reveal flex items-center gap-3 rounded-xl border border-primary/30 bg-white px-5 py-3"
+            className="reveal flex items-center gap-3 rounded-xl border border-primary/30 bg-card px-5 py-3"
           >
             <span className="text-sm text-foreground">{p}</span>
           </div>
@@ -792,7 +814,7 @@ function Tribute() {
         {MESSAGES.map((m) => (
           <blockquote
             key={m.who}
-            className="reveal rounded-2xl border border-border bg-white p-7 shadow-[var(--shadow-soft)]"
+            className="reveal rounded-2xl border border-border bg-card p-7 shadow-[var(--shadow-soft)]"
           >
             <p className="font-display text-4xl gold-text leading-none">“</p>
             <p className="mt-2 leading-relaxed text-foreground/85 italic">{m.text}</p>
@@ -836,7 +858,7 @@ function Legacy() {
         {LEGACY.map((l) => (
           <article
             key={l.t}
-            className="reveal rounded-2xl border border-border bg-white p-7 shadow-[var(--shadow-soft)]"
+            className="reveal rounded-2xl border border-border bg-card p-7 shadow-[var(--shadow-soft)]"
           >
             <h3 className="font-display text-2xl text-foreground">{l.t}</h3>
             <p className="mt-2 leading-relaxed text-muted-foreground">{l.d}</p>
@@ -844,7 +866,7 @@ function Legacy() {
         ))}
       </div>
 
-      <div className="reveal mx-auto mt-14 max-w-4xl rounded-3xl border border-primary/40 bg-white p-8 text-center shadow-[var(--shadow-elegant)] sm:p-12">
+      <div className="reveal mx-auto mt-14 max-w-4xl rounded-3xl border border-primary/40 bg-card p-8 text-center shadow-[var(--shadow-elegant)] sm:p-12">
         <p className="font-display text-3xl gold-text">Family Tree</p>
         <h3 className="mt-2 font-display text-3xl text-foreground sm:text-4xl">
           Rooted in love, growing through generations
@@ -856,7 +878,7 @@ function Legacy() {
           <span className="h-6 w-px bg-primary/40" />
           <div className="flex flex-wrap justify-center gap-2">
             {["Nhial Chuol Tut", "Kai Chuol Tut", "Yak Chuol Tut"].map((n) => (
-              <span key={n} className="rounded-full border border-border bg-white px-4 py-1.5">
+              <span key={n} className="rounded-full border border-border bg-card px-4 py-1.5">
                 {n}
               </span>
             ))}
