@@ -154,14 +154,19 @@
   font-family: var(--font-body);
 }
 @utility font-script {
-  font-family: var(--font-display);
+  font-family: var(--font-script);
 }
 
 @utility gold-text {
-  background: var(--gradient-gold);
+  background: linear-gradient(
+    135deg,
+    #f8e7a1,
+    #d4af37,
+    #b8860b
+  );
   -webkit-background-clip: text;
   background-clip: text;
-  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
 @utility ornament {

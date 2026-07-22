@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, createContext, useContext, useEffect, type ReactNode } from "react";
+import { useState, createContext, useContext, useEffect, useRef, type ReactNode } from "react";
 
 /* ------------------------------------------------------------------ */
 /*  Theme context                                                      */
@@ -22,6 +22,7 @@ import nyagoa from "@/assets/nyagoa.jpg";
 import nyatony from "@/assets/nyatony.jpg";
 import student from "@/assets/student.jpg";
 import tong from "@/assets/tong.jpg";
+import tony from "@/assets/tony.jpg";
 
 import { useReveal } from "@/hooks/use-reveal";
 
@@ -198,6 +199,43 @@ function SectionHeader({
 /*  Hero                                                               */
 /* ------------------------------------------------------------------ */
 function Hero() {
+  const fullText = "Nyatony Kai Tut";
+  const [displayed, setDisplayed] = useState("");
+  const stateRef = useRef({ index: 0, forward: true, paused: false });
+
+  useEffect(() => {
+    const s = stateRef.current;
+
+    const tick = () => {
+      if (s.paused) return;
+
+      if (s.forward) {
+        s.index += 1;
+        setDisplayed(fullText.slice(0, s.index));
+        if (s.index === fullText.length) {
+          s.paused = true;
+          setTimeout(() => {
+            s.forward = false;
+            s.paused = false;
+          }, 1400);
+        }
+      } else {
+        s.index -= 1;
+        setDisplayed(fullText.slice(0, s.index));
+        if (s.index === 0) {
+          s.paused = true;
+          setTimeout(() => {
+            s.forward = true;
+            s.paused = false;
+          }, 500);
+        }
+      }
+    };
+
+    const interval = setInterval(tick, 110);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section id="home" className="relative min-h-screen w-full">
       <div className="absolute inset-0">
@@ -215,7 +253,8 @@ function Hero() {
         </p>
 
         <h1 className="mt-4 font-display text-5xl leading-[1] text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.5)] sm:text-7xl md:text-8xl">
-          Nyatony Kai Tut
+          {displayed}
+          <span className="animate-pulse">|</span>
         </h1>
 
         <p className="mt-6 max-w-2xl font-display text-lg italic text-white/95 sm:text-xl">
